@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login & Signup</title>
+    <!-- <script></script> -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-900 text-white min-h-screen flex items-center justify-center">
+    <div id="auth-container" class="w-full max-w-md p-8 space-y-6">
+        <!-- Content will be injected dynamically by JavaScript -->
+    </div>
+    <script>
+        const authContainer = document.getElementById('auth-container');
+
+        function loadPage(page) {
+            authContainer.innerHTML = page === 'login' ? getLoginForm() : getSignupForm();
+        }
+
+        async function handleSubmit(e, route) {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData);
+
+            try {
+                const response = await fetch(route, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data),
+                });
+
+                const result = await response.json();
+                if (response.ok) {
+                    alert(result.message);
+                    if (route === '/auth/signup') {
+                        loadPage('login'); // Redirect to login page after signup
+                    } else if (route === '/auth/login') {
+                        console.log("Redirecting to main page...");
+                        window.location.href = "/homepage";
+                    }
+
+                } else {
+                    alert(result.message || 'An error occurred');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+            }
+        }
+
+        // Login Form HTML
+        function getLoginForm() {
+            return `
+    <h2 class="text-2xl font-bold text-center">Login</h2>
+    <form class="space-y-4" onsubmit="handleSubmit(event, '/auth/login')">
+      <input type="email" name="email" placeholder="Email" required
+        class="w-full p-3 rounded bg-gray-800 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+      <input type="password" name="password" placeholder="Password" required
+        class="w-full p-3 rounded bg-gray-800 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+      <button type="submit"
+        class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded">Login</button>
+    </form>
+    <p class="text-center">
+      Don't have an account? <a href="#" onclick="loadPage('signup')" class="text-blue-400">Sign up</a>
+    </p>
+  `;
+        }
+
+        // Signup Form HTML
+        function getSignupForm() {
+            return `
+    <h2 class="text-2xl font-bold text-center">Sign Up</h2>
+    <form class="space-y-4" onsubmit="handleSubmit(event, '/auth/signup')">
+      <input type="text" name="name" placeholder="Name" required
+        class="w-full p-3 rounded bg-gray-800 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+      <input type="email" name="email" placeholder="Email" required
+        class="w-full p-3 rounded bg-gray-800 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+      <input type="password" name="password" placeholder="Password" required
+        class="w-full p-3 rounded bg-gray-800 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+      <select name="role" class="w-full p-3 rounded bg-gray-800 border border-gray-700">
+        <option value="user">User</option>
+        <option value="admin">Admin</option>
+      </select>
+      <button type="submit"
+        class="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-2 px-4 rounded">Sign Up</button>
+    </form>
+    <p class="text-center">
+      Already have an account? <a href="#" onclick="loadPage('login')" class="text-blue-400">Login</a>
+    </p>
+  `;
+        }
+
+        // Load the login page by default
+        loadPage('login');
+
+    </script>
+</body>
+
+</html>

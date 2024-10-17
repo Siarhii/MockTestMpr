@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Mock Test - Admin Panel</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        .dark-mode {
+            background-color: #1a202c;
+            color: #fff;
+        }
+
+        .dark-mode .bg-white {
+            background-color: #2d3748;
+        }
+
+        .dark-mode .text-gray-700 {
+            color: #e2e8f0;
+        }
+
+        .dark-mode .border-gray-200 {
+            border-color: #4a5568;
+        }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+
+        .accordion-content.active {
+            max-height: 1000px;
+            transition: max-height 0.5s ease-in;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 transition-colors duration-200">
+    <nav class="bg-gray-800 text-white p-4">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-bold">Placement Go</h1>
+            <div class="hidden md:flex space-x-4">
+                <a href="/adminpage" class="hover:text-gray-300">Dashboard</a>
+                <button id="darkModeToggle" class="hover:text-gray-300">Dark</button>
+            </div>
+            <button id="mobileMenuButton" class="md:hidden">
+                <span class="sr-only">Menu</span>
+                <svg class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                </svg>
+                <svg class="hidden h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+    </nav>
+
+    <div id="mobileMenu" class="md:hidden bg-gray-700 p-4 hidden">
+        <a href="/adminpage" class="block text-white py-2">Dashboard</a>
+
+        <button id="darkModeToggleMobile" class="text-white py-2">Dark</button>
+    </div>
+
+    <div class="container mx-auto mt-8 p-4">
+        <h2 class="text-2xl font-bold mb-4">Add New Mock Test</h2>
+
+        <form id="addTestForm" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+            <!-- ... (previous form fields remain unchanged) ... -->
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="title">
+                    Test Title
+                </label>
+                <input
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    id="title" type="text" placeholder="Enter test title" required>
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="duration">
+                    Duration (in minutes)
+                </label>
+                <input
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    id="duration" type="text" placeholder="Enter test duration" required
+                    oninput="this.value = this.value.replace(/[^0-9]/g, '');"> <!-- Restrict input to numbers only -->
+
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="difficulty">
+                    Difficulty
+                </label>
+                <select
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-800 leading-tight focus:outline-none focus:shadow-outline"
+                    id="difficulty" required>
+                    <option value="">Select difficulty</option>
+                    <option value="easy">Easy</option>
+                    <option value="medium">Medium</option>
+                    <option value="hard">Hard</option>
+                </select>
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="domain">
+                    Domain
+                </label>
+                <select
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-800 leading-tight focus:outline-none focus:shadow-outline"
+                    id="domain" required>
+                    <option value="">Select domain</option>
+                    <option value="aptitude">Aptitude</option>
+                    <option value="c++">C++</option>
+                    <option value="networking">Networking</option>
+                    <option value="data structures">Data Structures</option>
+                    <option value="python">Python</option>
+                </select>
+            </div>
+
+            <div id="questions">
+                <!-- Questions will be dynamically added here -->
+            </div>
+
+            <div class="mb-4">
+                <button type="button" id="addQuestion"
+                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                    Add Question
+                </button>
+            </div>
+
+            <div class="flex items-center justify-between">
+                <button
+                    class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                    type="submit">
+                    Create Test
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        let questionCount = 0;
+        const body = document.body;
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        const darkModeToggleMobile = document.getElementById('darkModeToggleMobile');
+        const mobileMenuButton = document.getElementById('mobileMenuButton');
+        const mobileMenu = document.getElementById('mobileMenu');
+
+        function addQuestion() {
+            questionCount++;
+            const questionHtml = `
+                <div class="mb-6 p-4 border border-gray-200 rounded" id="question${questionCount}">
+                    <h3 class="text-lg font-semibold mb-2 cursor-pointer accordion-header flex justify-between items-center">
+                        <span>Question ${questionCount}</span>
+                        <span class="transform transition-transform duration-200">▼</span>
+                    </h3>
+                    <div class="accordion-content">
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="question${questionCount}Text">
+                                Question Text
+                            </label>
+                            <textarea class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="question${questionCount}Text" placeholder="Enter question text" required></textarea>
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2">
+                                Options
+                            </label>
+                            <div id="options${questionCount}" class="space-y-2">
+                                <div class="flex">
+                                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" type="text" placeholder="Option 1" required>
+                                    <button type="button" class="ml-2 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" onclick="removeOption(this)">Remove</button>
+                                </div>
+                                <div class="flex">
+                                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" type="text" placeholder="Option 2" required>
+                                    <button type="button" class="ml-2 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" onclick="removeOption(this)">Remove</button>
+                                </div>
+                            </div>
+                            <button type="button" class="mt-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" onclick="addOption(${questionCount})">Add Option</button>
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="question${questionCount}Correct">
+                                Correct Option
+                            </label>
+                            <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="question${questionCount}Correct" required>
+                                <option value="">Select correct option</option>
+                                <option value="0">Option 1</option>
+                                <option value="1">Option 2</option>
+                            </select>
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2" for="question${questionCount}Explanation">
+                                Explanation (Optional)
+                            </label>
+                            <textarea class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="question${questionCount}Explanation" placeholder="Enter explanation"></textarea>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.getElementById('questions').insertAdjacentHTML('beforeend', questionHtml);
+            addAccordionListeners();
+        }
+
+        function addAccordionListeners() {
+            const headers = document.querySelectorAll('.accordion-header');
+            headers.forEach(header => {
+                header.addEventListener('click', () => {
+                    const content = header.nextElementSibling;
+                    const arrow = header.querySelector('span:last-child');
+                    content.classList.toggle('active');
+                    arrow.style.transform = content.classList.contains('active') ? 'rotate(180deg)' : 'rotate(0)';
+                });
+            });
+        }
+
+        function addOption(questionNumber) {
+            const optionsContainer = document.getElementById(`options${questionNumber}`);
+            const newOptionNumber = optionsContainer.children.length + 1;
+            const newOptionHtml = `
+                <div class="flex mt-2">
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" type="text" placeholder="Option ${newOptionNumber}" required>
+                    <button type="button" class="ml-2 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" onclick="removeOption(this)">Remove</button>
+                </div>
+            `;
+            optionsContainer.insertAdjacentHTML('beforeend', newOptionHtml);
+            updateCorrectOptionDropdown(questionNumber);
+        }
+
+        function removeOption(button) {
+            const optionDiv = button.parentElement;
+            const optionsContainer = optionDiv.parentElement;
+            const questionNumber = optionsContainer.id.replace('options', '');
+            optionDiv.remove();
+            updateCorrectOptionDropdown(questionNumber);
+        }
+
+        function updateCorrectOptionDropdown(questionNumber) {
+            const optionsContainer = document.getElementById(`options${questionNumber}`);
+            const correctOptionSelect = document.getElementById(`question${questionNumber}Correct`);
+            const optionCount = optionsContainer.children.length;
+
+            // Clear existing options
+            correctOptionSelect.innerHTML = '<option value="">Select correct option</option>';
+
+            // Add new options
+            for (let i = 1; i <= optionCount; i++) {
+                const option = document.createElement('option');
+                option.value = i - 1;
+                option.textContent = `Option ${i}`;
+                correctOptionSelect.appendChild(option);
+            }
+        }
+
+        document.getElementById('addQuestion').addEventListener('click', addQuestion);
+
+        document.getElementById('addTestForm').addEventListener('submit', async function (e) {
+            try {
+                e.preventDefault();
+                const formData = {
+                    title: document.getElementById('title').value,
+                    duration: parseInt(document.getElementById('duration').value),
+                    difficulty: document.getElementById('difficulty').value,
+                    domain: document.getElementById('domain').value,
+                    questions: []
+                };
+
+                for (let i = 1; i <= questionCount; i++) {
+                    const questionDiv = document.getElementById(`question${i}`);
+                    const optionsContainer = document.getElementById(`options${i}`);
+                    const options = Array.from(optionsContainer.querySelectorAll('input[type="text"]')).map(input => input.value);
+                    formData.questions.push({
+                        question: questionDiv.querySelector(`#question${i}Text`).value,
+                        options: options,
+                        correctOption: parseInt(questionDiv.querySelector(`#question${i}Correct`).value),
+                        explanation: questionDiv.querySelector(`#question${i}Explanation`).value
+                    });
+                }
+
+                console.log('Form Data:', formData);
+                const res = await sendTestData(formData);
+                if (res) {
+                    this.reset();
+                    document.getElementById('questions').innerHTML = '';
+                    questionCount = 0;
+                }
+            }
+            catch (err) {
+                console.log("bruh");
+            }
+        });
+
+        const toggleDarkMode = () => {
+            const isDarkMode = body.classList.toggle('dark-mode');
+            if (isDarkMode) {
+                darkModeToggle.textContent = 'Light';
+                darkModeToggleMobile.textContent = 'Light';
+            } else {
+                darkModeToggle.textContent = 'Dark';
+                darkModeToggleMobile.textContent = 'Dark';
+            }
+            localStorage.setItem('darkMode', isDarkMode);
+        };
+
+        darkModeToggle.addEventListener('click', toggleDarkMode);
+        darkModeToggleMobile.addEventListener('click', toggleDarkMode);
+
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        const savedDarkMode = localStorage.getItem('darkMode');
+        if (savedDarkMode === 'true') {
+            toggleDarkMode();
+        }
+
+        const sendTestData = async (testData) => {
+            try {
+                console.log("this is data : ", testData, " and this is type  : ", typeof (testData))
+                const response = await fetch('/tests', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(testData),
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    return false;
+                    throw new Error(errorData.errors ? errorData.errors[0].msg : 'Failed to create test');
+                }
+
+                const newTest = await response.json();
+                console.log('Test created successfully:', newTest);
+                return true;
+            } catch (error) {
+                console.error('Error sending test data:', error);
+                alert(error.message);
+                return false;
+            }
+        };
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mock Test Panel</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        .bg-custom-dark {
+            background-color: rgba(17, 24, 39, 0.8);
+        }
+
+        .dark-mode {
+            background-color: #1a202c;
+            color: #e2e8f0;
+        }
+
+        .light-mode {
+            background-color: #f7fafc;
+            color: #2d3748;
+        }
+    </style>
+</head>
+
+<body class="light-mode transition-colors duration-300">
+    <!-- Navigation Bar -->
+    <nav class="bg-custom-dark border-b border-gray-700">
+        <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+            <div class="relative flex h-16 items-center justify-between">
+                <div class="flex items-center justify-start flex-1">
+                    <a href="/" class="text-white text-lg font-bold">&nbsp;&nbsp;&nbsp;Placement Go</a>
+                </div>
+                <div class="hidden sm:flex sm:ml-6 space-x-4">
+                    <a href="/homepage"
+                        class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Home</a>
+                    <a href="#"
+                        class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Profile</a>
+
+                    <button id="darkModeToggle"
+                        class="flex items-center rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">
+
+                        <span id="darkModeText">Dark</span>
+                    </button>
+                </div>
+                <div class="absolute inset-y-0 right-0 flex items-center sm:hidden">
+                    <button type="button"
+                        class="inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
+                        aria-controls="mobile-menu" aria-expanded="false" id="mobile-menu-button">
+                        <span class="sr-only">Open main menu</span>
+                        <svg class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 6h16M4 12h16m-7 6h7" />
+                        </svg>
+                        <svg class="hidden h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="sm:hidden hidden" id="mobile-menu">
+            <div class="space-y-1 px-2 pb-3 pt-2">
+                <a href="/homepage"
+                    class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Home</a>
+                <a href="#"
+                    class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Profile</a>
+
+                <button id="darkModeToggleMobile"
+                    class="flex items-center w-full rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white">
+
+                    <span id="darkModeTextMobile"> Dark </span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-4xl mx-auto px-4 py-6">
+        <h1 class="text-2xl font-bold mb-4">Mock Test Panel</h1>
+
+        <div class="mb-6">
+            <input id="searchInput" type="text" placeholder="Search mock tests..."
+                class="border border-gray-300 dark:border-gray-700 rounded-md p-2 w-full bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500" />
+        </div>
+
+        <div id="testContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+
+        <p id="noTestsMessage" class="text-gray-500 dark:text-gray-400 mt-4 hidden">No tests found.</p>
+    </div>
+
+    <script>
+        const testContainer = document.getElementById('testContainer');
+        const searchInput = document.getElementById('searchInput');
+        const noTestsMessage = document.getElementById('noTestsMessage');
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        const darkModeToggleMobile = document.getElementById('darkModeToggleMobile');
+        const darkModeIcon = document.getElementById('darkModeIcon');
+        const darkModeIconMobile = document.getElementById('darkModeIconMobile');
+        const darkModeText = document.getElementById('darkModeText');
+        const darkModeTextMobile = document.getElementById('darkModeTextMobile');
+        const body = document.body;
+
+        let tests = []; // Initialize an empty array for tests
+
+        // Function to fetch tests from the backend
+        const fetchTests = async () => {
+            try {
+                const response = await fetch('/tests'); // Fetch from the backend
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                tests = await response.json(); // Update tests array with fetched data
+                displayTests(tests); // Display fetched tests
+            } catch (error) {
+                console.error('Error fetching tests:', error);
+            }
+        };
+
+        // Function to display tests
+        const displayTests = (filteredTests) => {
+            testContainer.innerHTML = '';
+            if (filteredTests.length === 0) {
+                noTestsMessage.classList.remove('hidden');
+            } else {
+                noTestsMessage.classList.add('hidden');
+                filteredTests.forEach(test => {
+                    const testCard = `
+    <div class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-4 hover:shadow-lg transition-shadow duration-300">
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-white">${test.title}</h2>
+        <p class="text-gray-600 dark:text-gray-400">Domain: ${test.domain}</p>
+        <p class="text-gray-600 dark:text-gray-400">Difficulty: ${test.difficulty}</p>
+        <p class="text-gray-600 dark:text-gray-400">Duration: ${test.duration} mins</p>
+        <a href="/mock-test/${test.id}"
+            class="mt-4 inline-block bg-blue-500 text-white rounded-md px-4 py-2 hover:bg-blue-600 transition-colors duration-300">
+            Take Test
+        </a>
+    </div>
+    `;
+                    testContainer.innerHTML += testCard;
+                });
+            }
+        };
+
+        // Function to filter tests based on search input
+        searchInput.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            const filteredTests = tests.filter(test => test.title.toLowerCase().includes(query));
+            displayTests(filteredTests);
+        });
+
+        // Fetch tests on page load
+        fetchTests();
+
+        // Dark mode toggle functionality
+        const toggleDarkMode = () => {
+            const isDarkMode = body.classList.toggle('dark-mode');
+            body.classList.toggle('light-mode');
+
+            if (isDarkMode) {
+                darkModeText.textContent = 'Light';
+                darkModeTextMobile.textContent = 'Light';
+            } else {
+                darkModeText.textContent = 'Dark';
+                darkModeTextMobile.textContent = 'Dark';
+            }
+
+            localStorage.setItem('darkMode', isDarkMode);
+        };
+
+        darkModeToggle.addEventListener('click', toggleDarkMode);
+        darkModeToggleMobile.addEventListener('click', toggleDarkMode);
+
+        const savedDarkMode = localStorage.getItem('darkMode');
+        if (savedDarkMode === 'true') {
+            toggleDarkMode();
+        }
+
+        document.getElementById('mobile-menu-button').addEventListener('click', function () {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        });
+    </script>
+
+</body>
+
+</html>

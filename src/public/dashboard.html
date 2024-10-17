@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Test Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        .bg-custom-dark {
+            background-color: rgba(17, 24, 39, 0.8);
+        }
+
+        .dark-mode {
+            background-color: #1a202c;
+            color: #e2e8f0;
+        }
+
+        .light-mode {
+            background-color: #f7fafc;
+            color: #2d3748;
+        }
+    </style>
+</head>
+
+<body class="light-mode transition-colors duration-300">
+    <nav class="bg-custom-dark border-b border-gray-700">
+        <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+            <div class="relative flex h-16 items-center justify-between">
+                <div class="flex items-center justify-start flex-1">
+                    <a href="/" class="text-white text-lg font-bold">&nbsp;&nbsp;&nbsp;Placement Go</a>
+                </div>
+                <div class="hidden sm:flex sm:ml-6 space-x-4">
+                    <a href="/homepage"
+                        class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Home</a>
+                    <button id="darkModeToggle"
+                        class="flex items-center rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">
+                        <span id="darkModeText">Dark</span>
+                    </button>
+                </div>
+                <div class="absolute inset-y-0 right-0 flex items-center sm:hidden">
+                    <button type="button"
+                        class="inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
+                        aria-controls="mobile-menu" aria-expanded="false" id="mobile-menu-button">
+                        <span class="sr-only">Open main menu</span>
+                        <svg class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 6h16M4 12h16m-7 6h7" />
+                        </svg>
+                        <svg class="hidden h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="sm:hidden hidden" id="mobile-menu">
+            <div class="space-y-1 px-2 pb-3 pt-2">
+                <a href="/homepage"
+                    class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Home</a>
+                <button id="darkModeToggleMobile"
+                    class="flex items-center w-full rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white">
+                    <span id="darkModeTextMobile">Dark</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mx-auto p-6">
+        <h1 class="text-2xl font-bold mb-6">Manage Tests</h1>
+
+        <div class="flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4 mb-6">
+            <input type="text" id="searchInput" placeholder="Search by title..."
+                class="flex-grow p-2 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            <select id="sortDropdown"
+                class="w-full sm:w-auto p-2 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="">Sort by</option>
+                <option value="title">Title</option>
+                <option value="difficulty">Difficulty</option>
+                <option value="duration">Duration</option>
+            </select>
+            <a href="/addtestpage"
+                class="w-full sm:w-auto bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded text-center transition duration-200">+
+                Add Test</a>
+        </div>
+
+        <div id="testContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+    </div>
+
+    <div id="deleteModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+        <div class="bg-white dark:bg-gray-800 p-5 rounded-lg shadow-lg">
+            <h2 class="text-lg font-semibold mb-4 text-gray-900 dark:text-gray-200">Confirm Deletion</h2>
+            <p class="mb-4 text-gray-800 dark:text-gray-300">Enter the test name to confirm deletion:</p>
+            <input type="text" id="confirmTestName"
+                class="w-full p-2 rounded bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-900 border border-gray-300 dark:border-gray-600 mb-4">
+            <div class="flex justify-between">
+                <button id="confirmDelete"
+                    class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded transition duration-200">Delete</button>
+                <button id="cancelDelete"
+                    class="bg-gray-300 dark:bg-gray-600 hover:bg-gray-400 dark:hover:bg-gray-500 text-gray-900 dark:text-white px-4 py-2 rounded transition duration-200">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        const body = document.body;
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        const darkModeToggleMobile = document.getElementById('darkModeToggleMobile');
+        const darkModeText = document.getElementById('darkModeText');
+        const darkModeTextMobile = document.getElementById('darkModeTextMobile');
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const testContainer = document.getElementById('testContainer');
+        const searchInput = document.getElementById('searchInput');
+        const sortDropdown = document.getElementById('sortDropdown');
+        const deleteModal = document.getElementById('deleteModal');
+        const confirmDelete = document.getElementById('confirmDelete');
+        const cancelDelete = document.getElementById('cancelDelete');
+        const confirmTestName = document.getElementById('confirmTestName');
+        let testToDelete;
+        let tests = [];
+
+        const toggleDarkMode = () => {
+            const isDarkMode = body.classList.toggle('dark-mode');
+            body.classList.toggle('light-mode');
+
+            localStorage.setItem('darkMode', isDarkMode);
+            updateDarkModeText(isDarkMode);
+        };
+
+        const updateDarkModeText = (isDarkMode) => {
+            const text = isDarkMode ? 'Light' : 'Dark';
+            darkModeText.textContent = text;
+            darkModeTextMobile.textContent = text;
+        };
+
+        darkModeToggle.addEventListener('click', toggleDarkMode);
+        darkModeToggleMobile.addEventListener('click', toggleDarkMode);
+
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedDarkMode = localStorage.getItem('darkMode');
+            if (savedDarkMode === 'true') {
+                body.classList.add('dark-mode');
+                body.classList.remove('light-mode');
+                updateDarkModeText(true);
+            } else {
+                updateDarkModeText(false);
+            }
+            fetchTests();
+        });
+
+        const fetchTests = async () => {
+            try {
+                const response = await fetch('/tests');
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                tests = await response.json();
+                displayTests(tests);
+            } catch (error) {
+                console.error('Error fetching tests:', error);
+            }
+        };
+
+        const displayTests = (filteredTests) => {
+            testContainer.innerHTML = '';
+            filteredTests.forEach(test => {
+                const testCard = `
+                  <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md">
+                    <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-200">${test.title}</h2>
+                    <p class="text-gray-800 dark:text-gray-300">Domain: ${test.domain}</p>
+                    <p class="text-gray-800 dark:text-gray-300">Difficulty: ${test.difficulty}</p>
+                    <p class="text-gray-800 dark:text-gray-300">Duration: ${test.duration} mins</p>
+                    <div class="flex justify-between mt-4">
+                        <a href="/edit-test/${test.id}" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded transition duration-200">Edit</a>
+                        <button class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded transition duration-200" onclick="openDeleteModal(${test.id}, '${test.title}')">Delete</button>
+                    </div>
+                </div>
+                `;
+                testContainer.innerHTML += testCard;
+            });
+        };
+
+        const filterTests = () => {
+            const query = searchInput.value.toLowerCase();
+            const filteredTests = tests.filter(test => test.title.toLowerCase().includes(query));
+            displayTests(filteredTests);
+        };
+
+        const sortTests = () => {
+            const sortValue = sortDropdown.value;
+            let sortedTests;
+
+            if (sortValue === "title") {
+                sortedTests = [...tests].sort((a, b) => a.title.localeCompare(b.title));
+            } else if (sortValue === "difficulty") {
+                const difficultyOrder = { "Easy": 1, "Medium": 2, "Hard": 3 };
+                sortedTests = [...tests].sort((a, b) => difficultyOrder[a.difficulty] - difficultyOrder[b.difficulty]);
+            } else if (sortValue === "duration") {
+                sortedTests = [...tests].sort((a, b) => a.duration - b.duration);
+            } else {
+                sortedTests = tests;
+            }
+
+            displayTests(sortedTests);
+        };
+
+        const openDeleteModal = (id, title) => {
+            testToDelete = { id, title };
+            deleteModal.classList.remove('hidden');
+        };
+
+        confirmDelete.addEventListener('click', async () => {
+            const enteredName = confirmTestName.value.trim();
+            if (enteredName === testToDelete.title) {
+                try {
+                    const response = await fetch(`/tests/${testToDelete.id}`, {
+                        method: 'DELETE',
+                    });
+                    if (response.ok) {
+                        alert('Test deleted successfully');
+                        await fetchTests();
+                    } else {
+                        alert('Failed to delete test');
+                    }
+                } catch (error) {
+                    console.error('Error deleting test:', error);
+                }
+            } else {
+                alert('Test name does not match');
+            }
+            closeModal();
+        });
+
+        const closeModal = () => {
+            confirmTestName.value = '';
+            deleteModal.classList.add('hidden');
+        };
+
+        cancelDelete.addEventListener('click', closeModal);
+
+        searchInput.addEventListener('input', filterTests);
+        sortDropdown.addEventListener('change', sortTests);
+    </script>
+</body>
+
+</html>
