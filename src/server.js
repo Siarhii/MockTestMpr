@@ -7,6 +7,7 @@ const testRoutes = require('./routes/test.routes');
 const authRoutes = require('./routes/auth.routes');
 const authenticate = require('./middleware/auth.middleware');
 const isAdmin = require('./middleware/isAdmin.middleware');
+const userRoutes = require('./routes/user.route.js');
 
 
 app.use(express.json());
@@ -14,6 +15,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/tests', testRoutes);
 app.use('/auth', authRoutes);
+app.use('/user', userRoutes);
 
 
 app.get('/adminpage', authenticate, isAdmin, (req, res) => {
@@ -27,6 +29,21 @@ app.get('/homepage', authenticate, (req, res) => {
 })
 app.get("/loginpage", (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'loginPage.html'));
+})
+app.get("/profilepage", authenticate, (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'profilePage.html'));
+})
+app.get("/leaderboardpage", authenticate, (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'leaderboardPage.html'));
+})
+app.get("/aboutpage", (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'aboutPage.html'));
+})
+app.get("/helppage", (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'helpPage.html'));
+})
+app.get("/mock-test/:id", authenticate, (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'quizPage.html'));
 })
 
 app.use((err, req, res, next) => {

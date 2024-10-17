@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - Placement Go</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .bg-custom-dark {
+            background-color: rgba(17, 24, 39, 0.8);
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
+</head>
+
+<body
+    class="bg-gradient-to-r from-blue-100 to-purple-100 dark:from-gray-800 dark:to-gray-900 text-gray-900 dark:text-gray-100 min-h-screen transition-colors duration-300">
+    <nav class="bg-custom-dark dark:bg-gray-800 shadow-lg">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex justify-between">
+                <div class="flex space-x-7">
+                    <div>
+                        <a href="#" class="flex items-center py-4 px-2">
+                            <span class="font-semibold text-gray-300 dark:text-gray-100 text-lg">Placement Go</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <div class="hidden sm:flex sm:ml-6 space-x-4">
+                        <a href="/homepage"
+                            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Home</a>
+                        <a href="/profilepage"
+                            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Profile</a>
+                        <a href="/leaderboardpage"
+                            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Leaderboards</a>
+                        <a href="/helppage"
+                            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Help</a>
+                        <button id="dark-mode-toggle"
+                            class="flex items-center rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">
+                            <span id="darkModeText">Dark</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-4xl mx-auto py-10 px-4">
+        <h1 class="text-4xl font-bold text-center mb-8 text-indigo-800 dark:text-indigo-300">About Placement Go</h1>
+
+        <div class="bg-white dark:bg-gray-700 rounded-lg shadow-lg p-6 mb-8">
+            <h2 class="text-2xl font-semibold mb-4 text-gray-800 dark:text-gray-200">Our Mission</h2>
+            <p class="text-gray-600 dark:text-gray-300 mb-4">
+                At Placement Go, our mission is to empower students and job seekers with the tools they need to succeed
+                in their career journeys. We believe that everyone should have access to high-quality practice materials
+                to prepare for job interviews and placement tests.
+            </p>
+            <p class="text-gray-600 dark:text-gray-300 mb-4">
+                Our platform offers a wide range of free mock tests across various domains, including aptitude,
+                programming, and domain-specific knowledge. By providing these resources at no cost, we aim to level the
+                playing field and help individuals showcase their true potential to potential employers.
+            </p>
+        </div>
+
+        <div class="bg-white dark:bg-gray-700 rounded-lg shadow-lg p-6 mb-8">
+            <h2 class="text-2xl font-semibold mb-4 text-gray-800 dark:text-gray-200">Key Features</h2>
+            <ul class="list-disc list-inside text-gray-600 dark:text-gray-300 space-y-2">
+                <li>Free access to a wide variety of mock tests</li>
+                <li>Realistic test environment simulating actual placement tests</li>
+                <li>Detailed performance analytics and progress tracking</li>
+                <li>Personalized learning paths based on your performance</li>
+                <li>Community forums for peer-to-peer learning and support</li>
+                <li>Regular updates with new questions and test patterns</li>
+            </ul>
+        </div>
+
+        <div class="bg-white dark:bg-gray-700 rounded-lg shadow-lg p-6 mb-8">
+            <h2 class="text-2xl font-semibold mb-4 text-gray-800 dark:text-gray-200">Contact Us</h2>
+            <p class="text-gray-600 dark:text-gray-300 mb-4">
+                We'd love to hear from you! If you have any questions, suggestions, or need support, please don't
+                hesitate to reach out to us.
+            </p>
+            <ul class="text-gray-600 dark:text-gray-300 space-y-2">
+                <li><strong>Email:</strong> vin@gmail.com</li>
+                <li><strong>Phone:</strong> 93xxxxxx31</li>
+                <li><strong>Address:</strong> Somaiya Ayurvihar Complex Eastern Express Highway Near Everard Nagar, Sion
+                    East, Mumbai, Maharashtra 400022</li>
+            </ul>
+        </div>
+
+        <div class="bg-white dark:bg-gray-700 rounded-lg shadow-lg p-6">
+            <h2 class="text-2xl font-semibold mb-4 text-gray-800 dark:text-gray-200">Feedback / Rating</h2>
+            <form id="feedback-form" class="space-y-4">
+                <div>
+                    <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Name</label>
+                    <input type="text" id="name" name="name" required
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:bg-gray-600 dark:border-gray-500 dark:text-white">
+                </div>
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Email</label>
+                    <input type="email" id="email" name="email" required
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:bg-gray-600 dark:border-gray-500 dark:text-white">
+                </div>
+                <div>
+                    <label for="rating"
+                        class="block text-sm font-medium text-gray-700 dark:text-gray-300">Rating</label>
+                    <select id="rating" name="rating" required
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:bg-gray-600 dark:border-gray-500 dark:text-white">
+                        <option value="">Select a rating</option>
+                        <option value="5">5 - Excellent</option>
+                        <option value="4">4 - Very Good</option>
+                        <option value="3">3 - Good</option>
+                        <option value="2">2 - Fair</option>
+                        <option value="1">1 - Poor</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="feedback"
+                        class="block text-sm font-medium text-gray-700 dark:text-gray-300">Feedback</label>
+                    <textarea id="feedback" name="feedback" rows="4" required
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 dark:bg-gray-600 dark:border-gray-500 dark:text-white"></textarea>
+                </div>
+                <div>
+                    <button type="submit"
+                        class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        Submit Feedback
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Dark mode toggle functionality
+        const darkModeToggle = document.getElementById('dark-mode-toggle');
+        const htmlElement = document.documentElement;
+        const darkModeText = document.getElementById('darkModeText');
+
+        function toggleDarkMode() {
+            htmlElement.classList.toggle('dark');
+            const isDark = htmlElement.classList.contains('dark');
+            localStorage.setItem('darkMode', isDark);
+            darkModeText.textContent = isDark ? 'Light' : 'Dark';
+        }
+
+        darkModeToggle.addEventListener('click', toggleDarkMode);
+
+        // Check for saved dark mode preference
+        if (localStorage.getItem('darkMode') === 'true') {
+            htmlElement.classList.add('dark');
+            darkModeText.textContent = 'Light';
+        }
+
+        // Feedback form submission
+        document.getElementById('feedback-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            const feedbackData = Object.fromEntries(formData.entries());
+
+            // Here you would typically send this data to your server
+            console.log('Feedback submitted:', feedbackData);
+
+            // For demonstration, we'll just show an alert
+            alert('Thank you for your feedback!');
+            this.reset();
+        });
+    </script>
+</body>
+
+</html>

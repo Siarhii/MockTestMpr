@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help - Placement Go</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .bg-custom-dark {
+            background-color: rgba(17, 24, 39, 0.8);
+        }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
+</head>
+
+<body
+    class="bg-gradient-to-r from-blue-100 to-purple-100 dark:from-gray-800 dark:to-gray-900 text-gray-900 dark:text-gray-100 min-h-screen transition-colors duration-300">
+    <nav class="bg-custom-dark dark:bg-gray-800 shadow-lg">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex justify-between">
+                <div class="flex space-x-7">
+                    <div>
+                        <a href="#" class="flex items-center py-4 px-2">
+                            <span class="font-semibold text-gray-300 dark:text-gray-100 text-lg">Placement Go</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <div class="hidden sm:flex sm:ml-6 space-x-4">
+                        <a href="/homepage"
+                            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Home</a>
+                        <a href="/profilepage"
+                            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Profile</a>
+                        <a href="/leaderboardpage"
+                            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Leaderboards</a>
+                        <a href="/aboutpage"
+                            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">About</a>
+
+                        <button id="dark-mode-toggle"
+                            class="flex items-center rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">
+                            <span id="darkModeText">Dark</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-4xl mx-auto py-10 px-4">
+        <h1 class="text-4xl font-bold text-center mb-8 text-indigo-800 dark:text-indigo-300">Help Center</h1>
+
+        <div class="bg-white dark:bg-gray-700 rounded-lg shadow-lg p-6 mb-8">
+            <h2 class="text-2xl font-semibold mb-4 text-gray-800 dark:text-gray-200">Frequently Asked Questions</h2>
+
+            <div class="space-y-4">
+                <div class="accordion-item border-b border-gray-200 dark:border-gray-600 pb-4">
+                    <button
+                        class="accordion-header flex justify-between items-center w-full text-left font-semibold text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 focus:outline-none">
+                        <span>How do I start a mock test?</span>
+                        <svg class="w-5 h-5 transform transition-transform duration-200" fill="none"
+                            stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7">
+                            </path>
+                        </svg>
+                    </button>
+                    <div class="accordion-content mt-2 text-gray-600 dark:text-gray-400">
+                        <p>To start a mock test, navigate to the homepage and select a test from the available options.
+                            Click on the "Start Test" button to begin. Make sure you're in a quiet environment and have
+                            allocated enough time to complete the test.</p>
+                    </div>
+                </div>
+
+                <div class="accordion-item border-b border-gray-200 dark:border-gray-600 pb-4">
+                    <button
+                        class="accordion-header flex justify-between items-center w-full text-left font-semibold text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 focus:outline-none">
+                        <span>How are my test results calculated?</span>
+                        <svg class="w-5 h-5 transform transition-transform duration-200" fill="none"
+                            stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7">
+                            </path>
+                        </svg>
+                    </button>
+                    <div class="accordion-content mt-2 text-gray-600 dark:text-gray-400">
+                        <p>Your test results are calculated based on the number of correct answers. Each question
+                            typically carries equal weightage. The final score is usually presented as a percentage or
+                            as the number of correct answers out of the total questions.</p>
+                    </div>
+                </div>
+
+                <div class="accordion-item border-b border-gray-200 dark:border-gray-600 pb-4">
+                    <button
+                        class="accordion-header flex justify-between items-center w-full text-left font-semibold text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 focus:outline-none">
+                        <span>Can I review my answers after submitting the test?</span>
+                        <svg class="w-5 h-5 transform transition-transform duration-200" fill="none"
+                            stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7">
+                            </path>
+                        </svg>
+                    </button>
+                    <div class="accordion-content mt-2 text-gray-600 dark:text-gray-400">
+                        <p>Yes, after submitting your test, you can review your answers along with the correct
+                            solutions. This feature helps you understand your mistakes and learn from them. You can
+                            access this review from your test history in your profile.</p>
+                    </div>
+                </div>
+
+                <div class="accordion-item pb-4">
+                    <button
+                        class="accordion-header flex justify-between items-center w-full text-left font-semibold text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 focus:outline-none">
+                        <span>How often are new tests added to the platform?</span>
+                        <svg class="w-5 h-5 transform transition-transform duration-200" fill="none"
+                            stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7">
+                            </path>
+                        </svg>
+                    </button>
+                    <div class="accordion-content mt-2 text-gray-600 dark:text-gray-400">
+                        <p>We regularly update our test bank with new questions and full tests. On average, we add new
+                            content weekly to ensure you have a variety of up-to-date practice materials. Check the
+                            homepage regularly for new additions.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-indigo-100 dark:bg-indigo-900 rounded-lg shadow-lg p-6 text-center">
+            <h2 class="text-2xl font-semibold mb-4 text-indigo-800 dark:text-indigo-200">Need More Help?</h2>
+            <p class="text-indigo-600 dark:text-indigo-300 mb-4">We're here to assist you. Feel free to contact us
+                anytime for further support.</p>
+            <a href="/aboutpage"
+                class="inline-block bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50">
+                Contact Us
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Dark mode toggle functionality
+        const darkModeToggle = document.getElementById('dark-mode-toggle');
+        const htmlElement = document.documentElement;
+        const darkModeText = document.getElementById('darkModeText');
+
+        function toggleDarkMode() {
+            htmlElement.classList.toggle('dark');
+            const isDark = htmlElement.classList.contains('dark');
+            localStorage.setItem('darkMode', isDark);
+            darkModeText.textContent = isDark ? 'Light' : 'Dark';
+        }
+
+        darkModeToggle.addEventListener('click', toggleDarkMode);
+
+        // Check for saved dark mode preference
+        if (localStorage.getItem('darkMode') === 'true') {
+            htmlElement.classList.add('dark');
+            darkModeText.textContent = 'Light';
+        }
+
+        // Accordion functionality
+        document.querySelectorAll('.accordion-header').forEach(button => {
+            button.addEventListener('click', () => {
+                const accordionContent = button.nextElementSibling;
+                button.classList.toggle('active');
+
+                if (button.classList.contains('active')) {
+                    accordionContent.style.maxHeight = accordionContent.scrollHeight + 'px';
+                    button.querySelector('svg').classList.add('rotate-180');
+                } else {
+                    accordionContent.style.maxHeight = 0;
+                    button.querySelector('svg').classList.remove('rotate-180');
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

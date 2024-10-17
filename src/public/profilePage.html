@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile - Placement Go</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .bg-custom-dark {
+            background-color: rgba(17, 24, 39, 0.8);
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
+</head>
+
+<body
+    class="bg-gradient-to-r from-blue-100 to-purple-100 dark:from-gray-800 dark:to-gray-900 text-gray-900 dark:text-gray-100 min-h-screen transition-colors duration-300">
+    <nav class="bg-custom-dark dark:bg-gray-800 shadow-lg">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex justify-between">
+                <div class="flex space-x-7">
+                    <div>
+                        <a href="#" class="flex items-center py-4 px-2">
+                            <span class="font-semibold text-gray-300 dark:text-gray-100 text-lg">Placement Go</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <div class="hidden sm:flex sm:ml-6 space-x-4">
+                        <a href="/homepage"
+                            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Home</a>
+                        <a href="/aboutpage"
+                            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">About</a>
+                        <a href="/helppage"
+                            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Help</a>
+
+                        <button id="dark-mode-toggle"
+                            class="flex items-center rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">
+                            <span id="darkModeText">Dark</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-6xl mx-auto py-10 px-4">
+        <h1 class="text-4xl font-bold text-center mb-8 text-indigo-800 dark:text-indigo-300">User Profile</h1>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-white dark:bg-gray-700 rounded-lg shadow-lg p-6">
+                <h2 class="text-2xl font-semibold mb-4 text-gray-800 dark:text-gray-200">Personal Information</h2>
+                <div id="user-info" class="space-y-2 text-gray-600 dark:text-gray-300">
+                    <!-- User info will be populated here -->
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-gray-700 rounded-lg shadow-lg p-6">
+                <h2 class="text-2xl font-semibold mb-4 text-gray-800 dark:text-gray-200">Performance Overview</h2>
+                <canvas id="performanceChart"></canvas>
+            </div>
+        </div>
+
+        <div class="mt-8 bg-white dark:bg-gray-700 rounded-lg shadow-lg p-6">
+            <h2 class="text-2xl font-semibold mb-4 text-gray-800 dark:text-gray-200">Test History</h2>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-600">
+                    <thead class="bg-gray-50 dark:bg-gray-800">
+                        <tr>
+                            <th
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                Title</th>
+                            <th
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                Score</th>
+                            <th
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                Time Taken</th>
+                            <th
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                Difficulty</th>
+                            <th
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                Domain</th>
+                            <th
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                Date</th>
+                        </tr>
+                    </thead>
+                    <tbody id="test-history"
+                        class="bg-white dark:bg-gray-700 divide-y divide-gray-200 dark:divide-gray-600">
+                        <!-- Test history will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Fetch user profile information
+        async function fetchUserProfile(userId) {
+            try {
+                const response = await fetch(`/user/profile/${userId}`);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch user profile');
+                }
+                const profileData = await response.json();
+                return profileData;
+            } catch (error) {
+                console.error('Error fetching user profile:', error);
+                return null;
+            }
+        }
+
+        const userId = 1; // Example user ID
+
+        // Mock test history data (replace with actual API data)
+        const testHistory = [
+            { id: 1, title: "Aptitude Test", score: 80, timeTaken: 1800, difficulty: "medium", domain: "aptitude", submittedAt: "2024-10-15" },
+            { id: 2, title: "C++ Basics", score: 90, timeTaken: 2400, difficulty: "easy", domain: "c++", submittedAt: "2024-10-14" },
+            { id: 3, title: "Data Structures", score: 75, timeTaken: 3000, difficulty: "hard", domain: "data structures", submittedAt: "2024-10-13" }
+        ];
+
+        // Populate user info
+        function populateUserInfo(profileData) {
+            const userInfoDiv = document.getElementById('user-info');
+            userInfoDiv.innerHTML = `
+                <p><strong>Name:</strong> ${profileData.user.name}</p>
+                <p><strong>Email:</strong> ${profileData.user.email}</p>
+                <p><strong>Rating:</strong> ${profileData.user.rating}</p>
+                <p class="flex items-center">
+                    <strong class="mr-2">Rank:</strong>
+                    <a href="/leaderboardpage" class="text-blue-500 hover:underline hover:text-blue-700 transition duration-300 flex items-center">
+                        View Leaderboard
+                    </a>
+                </p>
+                <p><strong>Percentile:</strong> ${profileData.user.percentile}%</p>
+            `;
+        }
+
+        // Populate test history
+        function populateTestHistory() {
+            const testHistoryBody = document.getElementById('test-history');
+            testHistoryBody.innerHTML = testHistory.map(test => `
+                <tr class="text-gray-700 dark:text-gray-300">
+                    <td class="px-6 py-4 whitespace-nowrap">${test.title}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">${test.score}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">${Math.floor(test.timeTaken / 60)}:${(test.timeTaken % 60).toString().padStart(2, '0')}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">${test.difficulty}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">${test.domain}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">${test.submittedAt}</td>
+                </tr>
+            `).join('');
+        }
+
+        // Create performance chart
+        function createPerformanceChart() {
+            const ctx = document.getElementById('performanceChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: testHistory.map(test => test.submittedAt),
+                    datasets: [{
+                        label: 'Test Scores',
+                        data: testHistory.map(test => test.score),
+                        borderColor: 'rgb(75, 192, 192)',
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100
+                        }
+                    }
+                }
+            });
+        }
+
+        // Dark mode toggle functionality
+        const darkModeToggle = document.getElementById('dark-mode-toggle');
+        const htmlElement = document.documentElement;
+        const darkModeText = document.getElementById('darkModeText');
+
+        function toggleDarkMode() {
+            htmlElement.classList.toggle('dark');
+            const isDark = htmlElement.classList.contains('dark');
+            localStorage.setItem('darkMode', isDark);
+            darkModeText.textContent = isDark ? 'Light' : 'Dark';
+        }
+
+        darkModeToggle.addEventListener('click', toggleDarkMode);
+
+        // Check for saved dark mode preference
+        if (localStorage.getItem('darkMode') === 'true') {
+            htmlElement.classList.add('dark');
+            darkModeText.textContent = 'Light';
+        }
+
+        // Initialization
+        (async () => {
+            const profileData = await fetchUserProfile(userId);
+            if (profileData) {
+                populateUserInfo(profileData);
+                populateTestHistory();
+                createPerformanceChart();
+            }
+        })();
+    </script>
+</body>
+
+</html>

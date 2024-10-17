@@ -4,47 +4,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Placement Go</title>
+    <title>Mock Test</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .bg-custom-dark {
             background-color: rgba(17, 24, 39, 0.8);
-        }
-
-        .test-card {
-            background-color: white;
-        }
-
-        .dark .test-card {
-            background-color: #2d3748;
-            color: #e2e8f0;
-        }
-
-        .dark .test-card h2 {
-            color: white;
-        }
-
-        .dark .test-card p {
-            color: #a0aec0;
-        }
-
-        .dark .test-card a {
-            background-color: #4a5568;
-        }
-
-        .dark .test-card a:hover {
-            background-color: #2d3748;
         }
     </style>
     <script>
         tailwind.config = {
             darkMode: 'class',
         }
+
     </script>
 </head>
 
 <body
     class="bg-gradient-to-r from-blue-100 to-purple-100 dark:from-gray-800 dark:to-gray-900 text-gray-900 dark:text-gray-100 min-h-screen transition-colors duration-300">
+
     <nav class="bg-custom-dark dark:bg-gray-800 shadow-lg">
         <div class="max-w-6xl mx-auto px-4">
             <div class="flex justify-between">
@@ -57,8 +34,8 @@
                 </div>
                 <div class="flex items-center space-x-3">
                     <div class="hidden sm:flex sm:ml-6 space-x-4">
-                        <!-- <a href="/"
-                            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Home</a> -->
+                        <a href="/homepage"
+                            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Home</a>
                         <a href="/profilepage"
                             class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Profile</a>
                         <a href="/leaderboardpage"
@@ -67,8 +44,10 @@
                             class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">About</a>
                         <a href="/helppage"
                             class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Help</a>
+
                         <button id="dark-mode-toggle"
                             class="flex items-center rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">
+
                             <span id="darkModeText">Dark</span>
                         </button>
                     </div>
@@ -77,17 +56,8 @@
         </div>
     </nav>
 
-    <div id="home-page" class="max-w-4xl mx-auto px-4 py-6">
-        <h1 class="text-2xl font-bold mb-4">Mock Test Panel</h1>
-        <div class="mb-6">
-            <input id="searchInput" type="text" placeholder="Search mock tests..."
-                class="border border-gray-300 dark:border-gray-700 rounded-md p-2 w-full bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500" />
-        </div>
-        <div id="testContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
-        <p id="noTestsMessage" class="text-gray-500 dark:text-gray-400 mt-4 hidden">No tests found.</p>
-    </div>
-
-    <div id="quiz-page" class="max-w-3xl mx-auto py-10 px-4 hidden">
+    <div class="max-w-3xl mx-auto py-10 px-4">
+        <!-- <h1 class="text-4xl font-bold text-center mb-8 text-indigo-800 dark:text-indigo-300">Placement Go Mock Test</h1> -->
         <div id="timer" class="text-2xl font-bold text-center mb-6 text-indigo-600 dark:text-indigo-400"></div>
         <div id="quiz-container" class="space-y-6">
             <p class="text-center text-lg font-medium">Loading...</p>
@@ -104,84 +74,6 @@
         let startTime;
         let timerInterval;
         let duration;
-        let tests = [];
-
-        const darkModeToggle = document.getElementById('dark-mode-toggle');
-        const darkModeText = document.getElementById('darkModeText');
-        const htmlElement = document.documentElement;
-
-        function toggleDarkMode() {
-            htmlElement.classList.toggle('dark');
-            const isDark = htmlElement.classList.contains('dark');
-            localStorage.setItem('darkMode', isDark);
-            darkModeText.textContent = isDark ? 'Light' : 'Dark';
-        }
-
-        darkModeToggle.addEventListener('click', toggleDarkMode);
-
-        // Check for saved dark mode preference
-        if (localStorage.getItem('darkMode') === 'true') {
-            htmlElement.classList.add('dark');
-            darkModeText.textContent = 'Light';
-        }
-
-        async function fetchTests() {
-            try {
-                const response = await fetch('/tests');
-                if (!response.ok) throw new Error('Failed to fetch tests');
-                tests = await response.json();
-                displayTests(tests);
-            } catch (error) {
-                console.error('Error:', error);
-                document.getElementById('testContainer').innerHTML = '<p class="text-red-500 dark:text-red-400">Failed to load tests. Please try again later.</p>';
-            }
-        }
-
-        function displayTests(filteredTests) {
-            const testContainer = document.getElementById('testContainer');
-            const noTestsMessage = document.getElementById('noTestsMessage');
-            testContainer.innerHTML = '';
-
-            if (filteredTests.length === 0) {
-                noTestsMessage.classList.remove('hidden');
-            } else {
-                noTestsMessage.classList.add('hidden');
-                filteredTests.forEach(test => {
-                    const testCard = `
-                        <div class="test-card shadow-md rounded-lg p-4 hover:shadow-lg transition-shadow duration-300">
-                            <h2 class="text-lg font-semibold">${test.title}</h2>
-                            <p>Domain: ${test.domain}</p>
-                            <p>Difficulty: ${test.difficulty}</p>
-                            <p>Duration: ${test.duration} mins</p>
-                            <button onclick="startTest(${test.id})" class="mt-4 inline-block bg-blue-500 text-white rounded-md px-4 py-2 hover:bg-blue-600 transition-colors duration-300">
-                                Take Test
-                            </button>
-                        </div>
-                    `;
-                    testContainer.innerHTML += testCard;
-                });
-            }
-        }
-
-        document.getElementById('searchInput').addEventListener('input', (e) => {
-            const query = e.target.value.toLowerCase();
-            const filteredTests = tests.filter(test => test.title.toLowerCase().includes(query));
-            displayTests(filteredTests);
-        });
-
-        async function startTest(testId) {
-            try {
-                const response = await fetch(`/tests/${testId}`);
-                if (!response.ok) throw new Error('Failed to fetch test');
-                testData = await response.json();
-                document.getElementById('home-page').classList.add('hidden');
-                document.getElementById('quiz-page').classList.remove('hidden');
-                renderQuiz(testData);
-            } catch (error) {
-                console.error('Error:', error);
-                alert('Failed to start the test. Please try again.');
-            }
-        }
 
         function renderQuiz(test) {
             const quizContainer = document.getElementById('quiz-container');
@@ -258,6 +150,26 @@
             }
         }
 
+        function getTestIdFromURL() {
+            const pathParts = window.location.pathname.split('/');
+            return pathParts[pathParts.length - 1];
+        }
+
+        async function fetchQuiz() {
+            try {
+                const testId = getTestIdFromURL();
+                const response = await fetch(`/tests/${testId}`);
+                if (!response.ok) throw new Error('Failed to fetch test');
+                const test = await response.json();
+                testData = test;
+                renderQuiz(test);
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('quiz-container').innerHTML =
+                    '<p class="text-red-500 dark:text-red-400 text-center">Failed to load quiz. Please try again later.</p>';
+            }
+        }
+
         function submitQuiz() {
             clearInterval(timerInterval);
             const endTime = Date.now();
@@ -313,14 +225,12 @@
             backButton.textContent = 'Go Back to Mock Test Page';
             backButton.className = 'mt-4 px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-indigo-700 transition duration-200';
             backButton.onclick = () => {
-                document.getElementById('quiz-page').classList.add('hidden');
-                document.getElementById('home-page').classList.remove('hidden');
+                window.location.href = '/homepage';
             };
 
             results.appendChild(backButton);
 
             const quizContainer = document.getElementById('quiz-container');
-
             quizContainer.innerHTML = '';
             quizContainer.appendChild(results);
 
@@ -330,8 +240,17 @@
 
         document.getElementById('submit-btn').addEventListener('click', submitQuiz);
 
-        fetchTests();
+        // Dark mode toggle functionality
+        const darkModeToggle = document.getElementById('dark-mode-toggle');
+        const htmlElement = document.documentElement;
+
+        darkModeToggle.addEventListener('click', () => {
+            htmlElement.classList.toggle('dark');
+        });
+
+        fetchQuiz();
     </script>
+
 </body>
 
 </html>

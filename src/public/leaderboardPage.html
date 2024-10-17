@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaderboard - Placement Go</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .bg-custom-dark {
+            background-color: rgba(17, 24, 39, 0.8);
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
+</head>
+
+<body
+    class="bg-gradient-to-r from-blue-100 to-purple-100 dark:from-gray-800 dark:to-gray-900 text-gray-900 dark:text-gray-100 min-h-screen transition-colors duration-300">
+    <nav class="bg-custom-dark dark:bg-gray-800 shadow-lg">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex justify-between">
+                <div class="flex space-x-7">
+                    <div>
+                        <a href="#" class="flex items-center py-4 px-2">
+                            <span class="font-semibold text-gray-300 dark:text-gray-100 text-lg">Placement Go</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <div class="hidden sm:flex sm:ml-6 space-x-4">
+                        <a href="/homepage"
+                            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Home</a>
+                        <a href="/profilepage"
+                            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Profile</a>
+                        <a href="/aboutpage"
+                            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">About</a>
+                        <a href="/helppage"
+                            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Help</a>
+                        <button id="dark-mode-toggle"
+                            class="flex items-center rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">
+                            <span id="darkModeText">Dark</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-4xl mx-auto py-10 px-4">
+        <h1 class="text-4xl font-bold text-center mb-8 text-indigo-800 dark:text-indigo-300">Leaderboard</h1>
+
+        <div class="bg-white dark:bg-gray-700 rounded-lg shadow-lg p-6 mb-8">
+            <h2 class="text-2xl font-semibold mb-4 text-gray-800 dark:text-gray-200">Your Ranking</h2>
+            <div id="user-rank" class="text-xl text-gray-600 dark:text-gray-300">
+                Loading your rank...
+            </div>
+        </div>
+
+        <div class="bg-white dark:bg-gray-700 rounded-lg shadow-lg p-6">
+            <h2 class="text-2xl font-semibold mb-4 text-gray-800 dark:text-gray-200">Top 10 Rankers</h2>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-600">
+                    <thead class="bg-gray-50 dark:bg-gray-800">
+                        <tr>
+                            <th
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                Rank</th>
+                            <th
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                Name</th>
+                            <th
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                Rating</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboard-body"
+                        class="bg-white dark:bg-gray-700 divide-y divide-gray-200 dark:divide-gray-600">
+                        <tr>
+                            <td colspan="3" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">Loading
+                                leaderboard data...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Fetch leaderboard data
+        async function fetchLeaderboardData() {
+            try {
+                const response = await fetch('/user/leaderboard/rank');
+                if (!response.ok) {
+                    throw new Error('Failed to fetch leaderboard data');
+                }
+                return await response.json();
+            } catch (error) {
+                console.error('Error fetching leaderboard data:', error);
+                return null;
+            }
+        }
+
+        // Populate leaderboard
+        function populateLeaderboard(data) {
+            const userRankDiv = document.getElementById('user-rank');
+            const leaderboardBody = document.getElementById('leaderboard-body');
+
+            // Display user's rank
+            userRankDiv.innerHTML = `
+                Your Rank: <span class="font-bold">${data.userRank}</span><br>
+                Your Rating: <span class="font-bold">${data.userRating}</span>
+            `;
+
+            // Display top 10 rankers
+            leaderboardBody.innerHTML = data.topRankers.map((ranker, index) => `
+                <tr class="text-gray-700 dark:text-gray-300">
+                    <td class="px-6 py-4 whitespace-nowrap">${index + 1}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">${ranker.name}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">${ranker.rating}</td>
+                </tr>
+            `).join('');
+        }
+
+        // Dark mode toggle functionality
+        const darkModeToggle = document.getElementById('dark-mode-toggle');
+        const htmlElement = document.documentElement;
+        const darkModeText = document.getElementById('darkModeText');
+
+        function toggleDarkMode() {
+            htmlElement.classList.toggle('dark');
+            const isDark = htmlElement.classList.contains('dark');
+            localStorage.setItem('darkMode', isDark);
+            darkModeText.textContent = isDark ? 'Light' : 'Dark';
+        }
+
+        darkModeToggle.addEventListener('click', toggleDarkMode);
+
+        // Check for saved dark mode preference
+        if (localStorage.getItem('darkMode') === 'true') {
+            htmlElement.classList.add('dark');
+            darkModeText.textContent = 'Light';
+        }
+
+        // Initialize page
+        (async () => {
+            const leaderboardData = await fetchLeaderboardData();
+            if (leaderboardData) {
+                populateLeaderboard(leaderboardData);
+            } else {
+                document.getElementById('user-rank').textContent = 'Failed to load your rank.';
+                document.getElementById('leaderboard-body').innerHTML = '<tr><td colspan="3" class="px-6 py-4 text-center text-red-500">Failed to load leaderboard data.</td></tr>';
+            }
+        })();
+    </script>
+</body>
+
+</html>
