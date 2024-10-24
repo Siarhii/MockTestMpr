@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homepage - Placement Go</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .bg-custom-dark {
+            background-color: rgba(17, 24, 39, 0.8);
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
+</head>
+
+<body
+    class="bg-gradient-to-r from-blue-100 to-purple-100 dark:from-gray-800 dark:to-gray-900 text-gray-900 dark:text-gray-100 min-h-screen transition-colors duration-300">
+    <nav class="bg-custom-dark dark:bg-gray-800 shadow-lg">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex justify-between">
+                <div class="flex space-x-7">
+                    <div>
+                        <a href="/" class="flex items-center py-4 px-2">
+                            <span class="font-semibold text-gray-300 dark:text-gray-100 text-lg">Placement Go</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <div class="hidden sm:flex sm:ml-6 space-x-4">
+                        <a href="/homepage"
+                            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Home</a>
+                        <a href="/profilepage"
+                            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Profile</a>
+                        <a href="/leaderboardpage"
+                            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Leaderboards</a>
+                        <a href="/helppage"
+                            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Help</a>
+                        <button id="dark-mode-toggle"
+                            class="flex items-center rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">
+                            <span id="darkModeText">Dark</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-6xl mx-auto py-10 px-4">
+        <h1 class="text-4xl font-bold text-center mb-8 text-indigo-800 dark:text-indigo-300">Welcome to Placement Go
+        </h1>
+
+        <div class="bg-white dark:bg-gray-700 rounded-lg shadow-lg p-6 mb-8">
+            <h2 class="text-2xl font-semibold mb-4 text-gray-800 dark:text-gray-200">Prepare for Your Dream Job</h2>
+            <p class="text-gray-600 dark:text-gray-300 mb-4">
+                Placement Go is your one-stop platform for honing your skills and preparing for job interviews. Take
+                free mock tests, track your progress, and compete with peers to improve your chances of landing your
+                dream job.
+            </p>
+            <a href="#platform-benefits"
+                class="inline-block bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition duration-300">Explore
+                Benefits</a>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+            <div class="bg-white dark:bg-gray-700 rounded-lg shadow-lg p-6">
+                <h3 class="text-xl font-semibold mb-2 text-gray-800 dark:text-gray-200">Wide Range of Tests</h3>
+                <p class="text-gray-600 dark:text-gray-300">
+                    Access mock tests in various domains including programming, aptitude, and more.
+                </p>
+            </div>
+            <div class="bg-white dark:bg-gray-700 rounded-lg shadow-lg p-6">
+                <h3 class="text-xl font-semibold mb-2 text-gray-800 dark:text-gray-200">Track Your Progress</h3>
+                <p class="text-gray-600 dark:text-gray-300">
+                    Monitor your performance and see how you improve over time with detailed analytics.
+                </p>
+            </div>
+            <div class="bg-white dark:bg-gray-700 rounded-lg shadow-lg p-6">
+                <h3 class="text-xl font-semibold mb-2 text-gray-800 dark:text-gray-200">Compete & Learn</h3>
+                <p class="text-gray-600 dark:text-gray-300">
+                    Participate in leaderboards and learn from top performers in your field.
+                </p>
+            </div>
+        </div>
+
+        <div id="platform-benefits" class="bg-white dark:bg-gray-700 rounded-lg shadow-lg p-6 mb-12">
+            <h2 class="text-2xl font-semibold mb-6 text-gray-800 dark:text-gray-200">Why Choose Placement Go?</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="flex items-start space-x-4">
+                    <svg class="w-6 h-6 text-indigo-600 dark:text-indigo-400 mt-1" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <div>
+                        <h3 class="text-lg font-semibold mb-2 text-gray-800 dark:text-gray-200">Comprehensive Test
+                            Library</h3>
+                        <p class="text-gray-600 dark:text-gray-300">Access a vast collection of mock tests covering
+                            various subjects and difficulty levels.</p>
+                    </div>
+                </div>
+                <div class="flex items-start space-x-4">
+                    <svg class="w-6 h-6 text-indigo-600 dark:text-indigo-400 mt-1" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                    </svg>
+                    <div>
+                        <h3 class="text-lg font-semibold mb-2 text-gray-800 dark:text-gray-200">Detailed Performance
+                            Analytics</h3>
+                        <p class="text-gray-600 dark:text-gray-300">Get insights into your strengths and areas for
+                            improvement with our advanced analytics.</p>
+                    </div>
+                </div>
+                <div class="flex items-start space-x-4">
+                    <svg class="w-6 h-6 text-indigo-600 dark:text-indigo-400 mt-1" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <div>
+                        <h3 class="text-lg font-semibold mb-2 text-gray-800 dark:text-gray-200">Realistic Test
+                            Environment</h3>
+                        <p class="text-gray-600 dark:text-gray-300">Experience tests in an environment that closely
+                            mimics real placement exams.</p>
+                    </div>
+                </div>
+                <div class="flex items-start space-x-4">
+                    <svg class="w-6 h-6 text-indigo-600 dark:text-indigo-400 mt-1" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
+                        </path>
+                    </svg>
+                    <div>
+                        <h3 class="text-lg font-semibold mb-2 text-gray-800 dark:text-gray-200">Community Learning</h3>
+                        <p class="text-gray-600 dark:text-gray-300">Engage with peers, share knowledge, and learn from
+                            top performers in your field.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-indigo-100 dark:bg-indigo-900 rounded-lg shadow-lg p-6 text-center">
+            <h2 class="text-2xl font-semibold mb-4 text-indigo-800 dark:text-indigo-200">Ready to Boost Your Skills?
+            </h2>
+            <p class="text-indigo-600 dark:text-indigo-300 mb-4">Join thousands of students preparing for their dream
+                jobs. Start your journey today!</p>
+            <a href="/loginpage"
+                class="inline-block bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50">
+                Sign Up Now
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Dark mode toggle functionality
+        const darkModeToggle = document.getElementById('dark-mode-toggle');
+        const htmlElement = document.documentElement;
+        const darkModeText = document.getElementById('darkModeText');
+
+        function toggleDarkMode() {
+            htmlElement.classList.toggle('dark');
+            const isDark = htmlElement.classList.contains('dark');
+            localStorage.setItem('darkMode', isDark);
+            darkModeText.textContent = isDark ? 'Light' : 'Dark';
+        }
+
+        darkModeToggle.addEventListener('click', toggleDarkMode);
+
+        if (localStorage.getItem('darkMode') === 'true') {
+            htmlElement.classList.add('dark');
+            darkModeText.textContent = 'Light';
+        }
+    </script>
+</body>
+
+</html>

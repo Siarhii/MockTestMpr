@@ -26,7 +26,7 @@
             <div class="flex justify-between">
                 <div class="flex space-x-7">
                     <div>
-                        <a href="#" class="flex items-center py-4 px-2">
+                        <a href="/" class="flex items-center py-4 px-2">
                             <span class="font-semibold text-gray-300 dark:text-gray-100 text-lg">Placement Go</span>
                         </a>
                     </div>
@@ -56,7 +56,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="bg-white dark:bg-gray-700 rounded-lg shadow-lg p-6">
                 <h2 class="text-2xl font-semibold mb-4 text-gray-800 dark:text-gray-200">Personal Information</h2>
-                <div id="user-info" class="space-y-2 text-gray-600 dark:text-gray-300">
+                <div id="user-info" class="space-y-4 text-gray-600 dark:text-gray-300">
                     <!-- User info will be populated here -->
                 </div>
             </div>
@@ -75,7 +75,7 @@
                         <tr>
                             <th
                                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                Title</th>
+                                Test Title</th>
                             <th
                                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                 Score</th>
@@ -103,10 +103,9 @@
     </div>
 
     <script>
-        // Fetch user profile information
-        async function fetchUserProfile(userId) {
+        async function fetchUserProfile() {
             try {
-                const response = await fetch(`/user/profile/${userId}`);
+                const response = await fetch(`user/profile`);
                 if (!response.ok) {
                     throw new Error('Failed to fetch user profile');
                 }
@@ -118,74 +117,101 @@
             }
         }
 
-        const userId = 1; // Example user ID
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
 
-        // Mock test history data (replace with actual API data)
-        const testHistory = [
-            { id: 1, title: "Aptitude Test", score: 80, timeTaken: 1800, difficulty: "medium", domain: "aptitude", submittedAt: "2024-10-15" },
-            { id: 2, title: "C++ Basics", score: 90, timeTaken: 2400, difficulty: "easy", domain: "c++", submittedAt: "2024-10-14" },
-            { id: 3, title: "Data Structures", score: 75, timeTaken: 3000, difficulty: "hard", domain: "data structures", submittedAt: "2024-10-13" }
-        ];
+        function formatTimeTaken(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = seconds % 60;
+            return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+        }
 
-        // Populate user info
         function populateUserInfo(profileData) {
             const userInfoDiv = document.getElementById('user-info');
             userInfoDiv.innerHTML = `
-                <p><strong>Name:</strong> ${profileData.user.name}</p>
-                <p><strong>Email:</strong> ${profileData.user.email}</p>
-                <p><strong>Rating:</strong> ${profileData.user.rating}</p>
-                <p class="flex items-center">
-                    <strong class="mr-2">Rank:</strong>
-                    <a href="/leaderboardpage" class="text-blue-500 hover:underline hover:text-blue-700 transition duration-300 flex items-center">
-                        View Leaderboard
-                    </a>
-                </p>
-                <p><strong>Percentile:</strong> ${profileData.user.percentile}%</p>
+                <div class="space-y-2">
+                    <p><strong>Name:</strong> ${profileData.user.name}</p>
+                    <p><strong>Email:</strong> ${profileData.user.email}</p>
+                    <p><strong>Rating:</strong> ${profileData.user.rating}</p>
+                    <p><strong>Rank:</strong> ${profileData.user.rank}</p>
+                    <p><strong>Percentile:</strong> ${profileData.user.percentile.toFixed(1)}%</p>
+                    <p class="mt-4">
+                        <a href="/leaderboardpage" class="inline-block bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-300">
+                            View Leaderboard
+                        </a>
+                    </p>
+                </div>
             `;
         }
 
-        // Populate test history
-        function populateTestHistory() {
+        function populateTestHistory(testHistory) {
             const testHistoryBody = document.getElementById('test-history');
             testHistoryBody.innerHTML = testHistory.map(test => `
-                <tr class="text-gray-700 dark:text-gray-300">
+                <tr class="text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600">
                     <td class="px-6 py-4 whitespace-nowrap">${test.title}</td>
-                    <td class="px-6 py-4 whitespace-nowrap">${test.score}</td>
-                    <td class="px-6 py-4 whitespace-nowrap">${Math.floor(test.timeTaken / 60)}:${(test.timeTaken % 60).toString().padStart(2, '0')}</td>
-                    <td class="px-6 py-4 whitespace-nowrap">${test.difficulty}</td>
-                    <td class="px-6 py-4 whitespace-nowrap">${test.domain}</td>
-                    <td class="px-6 py-4 whitespace-nowrap">${test.submittedAt}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">${test.score}%</td>
+                    <td class="px-6 py-4 whitespace-nowrap">${formatTimeTaken(test.time_taken)}</td>
+                    <td class="px-6 py-4 whitespace-nowrap capitalize">${test.difficulty}</td>
+                    <td class="px-6 py-4 whitespace-nowrap capitalize">${test.domain}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">${formatDate(test.submitted_at)}</td>
                 </tr>
             `).join('');
         }
 
-        // Create performance chart
-        function createPerformanceChart() {
+        function createPerformanceChart(testHistory) {
             const ctx = document.getElementById('performanceChart').getContext('2d');
+
+            // Reverse the array to show progression over time
+            const chartData = [...testHistory].reverse();
+
             new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: testHistory.map(test => test.submittedAt),
+                    labels: chartData.map(test => formatDate(test.submitted_at)),
                     datasets: [{
                         label: 'Test Scores',
-                        data: testHistory.map(test => test.score),
-                        borderColor: 'rgb(75, 192, 192)',
-                        tension: 0.1
+                        data: chartData.map(test => test.score),
+                        borderColor: 'rgb(59, 130, 246)',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        tension: 0.1,
+                        fill: true
                     }]
                 },
                 options: {
                     responsive: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
                     scales: {
                         y: {
                             beginAtZero: true,
-                            max: 100
+                            max: 100,
+                            title: {
+                                display: true,
+                                text: 'Score (%)'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Test Date'
+                            }
                         }
                     }
                 }
             });
         }
 
-        // Dark mode toggle functionality
         const darkModeToggle = document.getElementById('dark-mode-toggle');
         const htmlElement = document.documentElement;
         const darkModeText = document.getElementById('darkModeText');
@@ -199,19 +225,19 @@
 
         darkModeToggle.addEventListener('click', toggleDarkMode);
 
-        // Check for saved dark mode preference
         if (localStorage.getItem('darkMode') === 'true') {
             htmlElement.classList.add('dark');
             darkModeText.textContent = 'Light';
         }
 
-        // Initialization
+
+
         (async () => {
-            const profileData = await fetchUserProfile(userId);
+            const profileData = await fetchUserProfile();
             if (profileData) {
                 populateUserInfo(profileData);
-                populateTestHistory();
-                createPerformanceChart();
+                populateTestHistory(profileData.testHistory);
+                createPerformanceChart(profileData.testHistory);
             }
         })();
     </script>

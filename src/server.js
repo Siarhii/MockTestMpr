@@ -8,6 +8,7 @@ const authRoutes = require('./routes/auth.routes');
 const authenticate = require('./middleware/auth.middleware');
 const isAdmin = require('./middleware/isAdmin.middleware');
 const userRoutes = require('./routes/user.route.js');
+const resultRoutes = require('./routes/result.routes.js');
 
 
 app.use(express.json());
@@ -16,6 +17,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/tests', testRoutes);
 app.use('/auth', authRoutes);
 app.use('/user', userRoutes);
+app.use('/results', resultRoutes);
 
 
 app.get('/adminpage', authenticate, isAdmin, (req, res) => {
@@ -42,8 +44,11 @@ app.get("/aboutpage", (req, res) => {
 app.get("/helppage", (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'helpPage.html'));
 })
-app.get("/mock-test/:id", authenticate, (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'quizPage.html'));
+app.get("/edit-test/:id", authenticate, (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'editTests.html'));
+})
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'startPage.html'));
 })
 
 app.use((err, req, res, next) => {

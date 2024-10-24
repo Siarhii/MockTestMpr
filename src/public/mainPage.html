@@ -50,15 +50,13 @@
             <div class="flex justify-between">
                 <div class="flex space-x-7">
                     <div>
-                        <a href="#" class="flex items-center py-4 px-2">
+                        <a href="/" class="flex items-center py-4 px-2">
                             <span class="font-semibold text-gray-300 dark:text-gray-100 text-lg">Placement Go</span>
                         </a>
                     </div>
                 </div>
                 <div class="flex items-center space-x-3">
                     <div class="hidden sm:flex sm:ml-6 space-x-4">
-                        <!-- <a href="/"
-                            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Home</a> -->
                         <a href="/profilepage"
                             class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Profile</a>
                         <a href="/leaderboardpage"
@@ -79,9 +77,16 @@
 
     <div id="home-page" class="max-w-4xl mx-auto px-4 py-6">
         <h1 class="text-2xl font-bold mb-4">Mock Test Panel</h1>
-        <div class="mb-6">
+        <div class="mb-6 flex flex-wrap items-center gap-4">
             <input id="searchInput" type="text" placeholder="Search mock tests..."
-                class="border border-gray-300 dark:border-gray-700 rounded-md p-2 w-full bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500" />
+                class="border border-gray-300 dark:border-gray-700 rounded-md p-2 flex-grow bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500" />
+            <select id="sortSelect"
+                class="border border-gray-300 dark:border-gray-700 rounded-md p-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
+                <option value="">Sort by...</option>
+                <option value="difficulty">Difficulty</option>
+                <option value="domain">Domain</option>
+                <option value="duration">Duration</option>
+            </select>
         </div>
         <div id="testContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
         <p id="noTestsMessage" class="text-gray-500 dark:text-gray-400 mt-4 hidden">No tests found.</p>
@@ -163,11 +168,27 @@
             }
         }
 
-        document.getElementById('searchInput').addEventListener('input', (e) => {
-            const query = e.target.value.toLowerCase();
-            const filteredTests = tests.filter(test => test.title.toLowerCase().includes(query));
+        function filterAndSortTests() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const sortBy = document.getElementById('sortSelect').value;
+
+            let filteredTests = tests.filter(test => test.title.toLowerCase().includes(query));
+
+            if (sortBy) {
+                filteredTests.sort((a, b) => {
+                    if (sortBy === 'duration') {
+                        return a[sortBy] - b[sortBy];
+                    } else {
+                        return a[sortBy].localeCompare(b[sortBy]);
+                    }
+                });
+            }
+
             displayTests(filteredTests);
-        });
+        }
+
+        document.getElementById('searchInput').addEventListener('input', filterAndSortTests);
+        document.getElementById('sortSelect').addEventListener('change', filterAndSortTests);
 
         async function startTest(testId) {
             try {
@@ -258,11 +279,40 @@
             }
         }
 
-        function submitQuiz() {
+        async function submitQuiz() {
             clearInterval(timerInterval);
             const endTime = Date.now();
             const totalTimeTaken = Math.floor((endTime - startTime) / 1000);
 
+            try {
+                const response = await fetch('/results/submit', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        test_id: testData.id,
+                        time_taken: totalTimeTaken,
+                        difficulty: testData.difficulty,
+                        domain: testData.domain,
+                        user_answers: userAnswers
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to submit quiz');
+                }
+
+                const result = await response.json();
+                displayResults(result, totalTimeTaken);
+
+            } catch (error) {
+                console.error('Error submitting quiz:', error);
+                alert('Failed to submit quiz. Please try again.');
+            }
+        }
+
+        function displayResults(serverResult, totalTimeTaken) {
             const results = document.createElement('div');
             results.className = 'space-y-6';
 
@@ -271,8 +321,18 @@
             summary.textContent = 'Quiz Results';
             results.appendChild(summary);
 
-            let score = 0;
+            // Display rating changes
+            const ratingCard = document.createElement('div');
+            ratingCard.className = 'bg-white dark:bg-gray-700 rounded-lg shadow-lg p-6 text-center mb-6';
+            ratingCard.innerHTML = `
+                <p class="text-xl font-bold ${serverResult.ratingChange >= 0 ? 'text-green-600' : 'text-red-600'}">
+                    Rating Change:  ${serverResult.ratingChange >= 0 ? '+' : ''}${serverResult.ratingChange}
+                </p>
+                <p class="text-lg mt-2">New Rating: ${serverResult.newRating}</p>
+            `;
+            results.appendChild(ratingCard);
 
+            // Display individual question results
             testData.questions.forEach((question, index) => {
                 const userAnswer = userAnswers[index];
                 const correctAnswer = question.correct_option;
@@ -286,29 +346,26 @@
                 const userAnswerText = userAnswer !== undefined ? question.options[userAnswer].option_text : 'Not answered';
                 const correctAnswerText = question.options[correctAnswer].option_text;
 
-                const resultContent = `
+                resultCard.innerHTML = `
                     <p class="font-semibold text-lg mb-2 text-gray-800 dark:text-gray-200">${question.question}</p>
                     <p class="mb-1">Your answer: <span class="${resultClass}">${userAnswerText}</span></p>
                     <p class="mb-2">Correct answer: <span class="text-green-600 dark:text-green-400">${correctAnswerText}</span></p>
                     <p class="${resultClass} font-medium">${isCorrect ? 'Correct!' : 'Incorrect'}</p>
                     ${question.explanation ? `<p class="mt-2 text-gray-600 dark:text-gray-400 italic">${question.explanation}</p>` : ''}
                 `;
-
-                resultCard.innerHTML = resultContent;
                 results.appendChild(resultCard);
-
-                if (isCorrect) score++;
             });
 
+            // Display score summary
             const scoreSummary = document.createElement('div');
             scoreSummary.className = 'text-xl font-bold text-center mt-6 p-4 bg-indigo-100 dark:bg-zinc-700 rounded-lg border-2 border-indigo-300 dark:border-indigo-600';
             scoreSummary.innerHTML = `
-                Your Score: ${score} / ${testData.questions.length}<br>
+                Your Score: ${serverResult.score} / ${testData.questions.length}<br>
                 Total Time Taken: ${Math.floor(totalTimeTaken / 60)}:${(totalTimeTaken % 60).toString().padStart(2, '0')}
             `;
-
             results.appendChild(scoreSummary);
 
+            // Back button
             const backButton = document.createElement('button');
             backButton.textContent = 'Go Back to Mock Test Page';
             backButton.className = 'mt-4 px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-indigo-700 transition duration-200';
@@ -316,11 +373,9 @@
                 document.getElementById('quiz-page').classList.add('hidden');
                 document.getElementById('home-page').classList.remove('hidden');
             };
-
             results.appendChild(backButton);
 
             const quizContainer = document.getElementById('quiz-container');
-
             quizContainer.innerHTML = '';
             quizContainer.appendChild(results);
 
